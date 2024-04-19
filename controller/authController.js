@@ -1,16 +1,16 @@
 const User = require("../model/userModel");
 const generateToken = require("../helpers/generateToken");
+const bcrypt = require("bcrypt");
 //const bcrypt = require("bcrypt");
 
 const registerUser = async (req, res) => {
-  try { 
+  try {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       throw new Error("please enter all fields");
-    
     }
-    const userAvailable = await User.findOne({email});
-          console.log("userAvailable", userAvailable)
+    const userAvailable = await User.findOne({ email });
+    console.log("userAvailable", userAvailable);
     if (userAvailable) {
       throw new Error("User already registered");
     }
@@ -28,26 +28,26 @@ const registerUser = async (req, res) => {
     res.status(500).send({
       success: false,
       message: error.message,
-      stackTrace:error.stack
+      stackTrace: error.stack,
     });
   }
 };
 
-const loginUser = async(req,res)=>{
+const loginUser = async (req, res) => {
   try {
-    const {email,password}=req.body;
+    const { email, password } = req.body;
 
-    if(!email||!password){
-      throw new Error("please provide email and password")
+    if (!email || !password) {
+      throw new Error("please provide email and password");
     }
-    
-    const user= await User.findOne({email});
-    if(!user){
-      throw new Error("user not found")
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("user not found");
     }
 
     const passwordMatched = await user.matchPassword(password);
-    if(user && passwordMatched){
+    if (user && passwordMatched) {
       res.status(201).send({
         success: true,
         message: "user logged in successfully",
@@ -62,15 +62,45 @@ const loginUser = async(req,res)=>{
       error: error.message,
       stackTrace: error.stack,
     });
-    
   }
 };
 
-const resetPasswordController = async(req,res)=>{
-       //verifying email and old password
-//        const{email, password}=req.body;
-//       const emailMatch= await User.findById({email});
-//       console.log(emailMatch) 
- }
+const resetPasswordController = async (req, res) => {
+  try {
+    //verifying email and old password
+    const { email, oldPassword, newPassword } = req.body;
 
-module.exports = { registerUser,loginUser,resetPasswordController };
+    //find user
+    const user = await User.findOne({ email });
+
+    //match old password
+    const oldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!oldPassword) {
+      throw new Error("old password did not match");
+    }
+
+    //hash the new password
+    const hashNewPassword= await bcrypt.hash(newPassword,10);
+
+   const updatedUser = await User({
+        password: hashNewPassword
+    })
+    res.status(201).send({
+      success: true,
+      message: "user created successfully",
+      updatedUser
+    });
+   
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error: error.message,
+      stackTrace: error.stack,
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, resetPasswordController };
