@@ -1,7 +1,7 @@
 
 const classModel = require("../model/classModel");
 
-const classController = async (req, res) => {
+const createClassController = async (req, res) => {
   try {
  
     let createClass = await classModel.create({
@@ -44,4 +44,4 @@ const getClassController =  async (req, res) => {
       };
 
 
-module.exports = { classController,getClassController };
+module.exports = { createClassController,getClassController };

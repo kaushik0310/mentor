@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const User = require("../model/userModel");
 
 const authToken = async (req, res, next) => {
   try {
@@ -7,9 +7,11 @@ const authToken = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     //console.log("check");
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    //console.log("decoded",decoded);
-    req.user = await User.findById(decoded.id).select("-password");
+    console.log("decoded",decoded);
+    //req.user = await User.findById(decoded.id)
     // console.log("req.user:",req.user);
+      req.body.id = decoded.id;
+      console.log("req.body.id ", req.body.id);
     next();
   } catch (error) {
     console.log(error);

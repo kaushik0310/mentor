@@ -1,5 +1,5 @@
 const express = require("express");
-const { classController, getClassController } = require("../controller/classController");
+const { createClassController, getClassController } = require("../controller/classController");
 const upload = require("../middlewares/multer");
 const classModel = require("../model/classModel");
 
@@ -7,7 +7,7 @@ const classModel = require("../model/classModel");
 const router = express.Router();
 
 
-router.post("/createClass", upload.single("filename"), classController);
+router.post("/createClass", upload.single("filename"), createClassController);
 router.get("/getClass", getClassController);
 
 

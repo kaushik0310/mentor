@@ -15,6 +15,24 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    answer: {
+      type: String,
+      required: [true, "answer is required"],
+    },
+    otp: {
+      type: String,
+      default:null,
+    },
+    otpExpires: {
+      type:String,
+      default:null,
+    },
+    // otpVerified:{
+    //   type:Boolean,
+    //   default:false
+    // }
+
+  
   },
   { timestamps: true }
 );

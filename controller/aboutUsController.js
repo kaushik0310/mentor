@@ -1,5 +1,6 @@
 const aboutUsModel = require("../model/aboutUsModel");
 //const response = require("../helpers/errorHandler");
+
 const createAboutUs = async (req, res) => {
  //let responseData = {};
 
