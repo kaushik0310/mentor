@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   updatePasswordController,
+  resetSecurityPasswordController,
   forgotPasswordController,
   resendOTPController,
   resetPasswordController,
@@ -18,7 +19,7 @@ router.post("/login", loginUser);
 router.post("/updatePassword", authToken, updatePasswordController);
 
 //route for resetting password through security answer
-//router.post("/resetPassword", resetPasswordController);
+ router.post("/resetPassword", resetSecurityPasswordController);
 
 // Endpoint to request OTP for password reset
 router.post("/forgotPassword", forgotPasswordController);

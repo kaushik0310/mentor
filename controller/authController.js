@@ -115,37 +115,42 @@ const updatePasswordController = async (req, res) => {
   }
 };
 
-// const resetPasswordController=async(req,res)=>{
-//   try {
-//      const{email, answer, newPassword}=req.body;
-//      if(!email || !answer || !newPassword){
-//       throw new Error("please provide all fields")
-//      }
+const resetSecurityPasswordController=async(req,res)=>{
+  try {
+     const{email, answer, newPassword}=req.body;
+     if(!email || !answer || !newPassword){
+      throw new Error("please provide all fields")
+     }
+     
+     //const user = await User.findOne({email,answer})
+      // if (!user ) {
+      //   throw new Error("incorrect email or security answer");
+      // }
 
-//      const user = await User.findOne({email,answer})
+      const user = await User.findOne({ email });
+      const answerMatched = await user.matchAnswer(answer);
+      if(!user || !answerMatched){
+      throw new Error("incorrect email or security answer")
+      }
 
-//      if(!user){
-//       throw new Error("incorrect email or security answer")
-//      }
-
-//      user.password=newPassword;
-//      await user.save();
-//      res.status(200).send({
-//         success:true,
-//         message:"password reset successful",
-//         user
-//      })
+     user.password=newPassword;
+     await user.save();
+     res.status(200).send({
+        success:true,
+        message:"password reset successful",
+        user
+     })
    
 
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       success: false,
-//       error: error.message,
-//       stackTrace: error.stack,
-//     });
-//   }
-// }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error: error.message,
+      stackTrace: error.stack,
+    });
+  }
+}
 
 // // Nodemailer configuration
 // const transporter = nodemailer.createTransport({
@@ -218,6 +223,7 @@ const resendOTPController=async(req,res)=>{
 
     // Generate OTP
     const otp = generateOTP();
+
     user.otp = otp;
     user.otpExpires = Date.now() + 600000; // OTP expires in 10 minutes
     await user.save();
@@ -249,14 +255,20 @@ const resetPasswordController=async(req,res)=>{
         const { email, otp, newPassword } = req.body;
         const user = await User.findOne({email})
 
-        if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
-          return res.status(400).json({ message: "Invalid or expired OTP" });
-        }
+        const otpMatched = await user.matchOtp(otp);
+      //console.log("checkOtpMatch", otpMatched);
+        // if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+        //   return res.status(400).json({ message: "Invalid or expired OTP" });
+        // }
+
+         if (!otpMatched || user.otpExpires < Date.now()) {
+           return res.status(400).json({ message: "Invalid or expired OTP" });
+         }
 
         // Update password
        user.password = newPassword;
-       user.otp = null;
-       user.otpExpires = null;
+       user.otp = "";
+      user.otpExpires = "";
        await user.save();
   res.json({ message: 'Password reset successfully' });
         
@@ -321,4 +333,4 @@ const resetPasswordController=async(req,res)=>{
 //       }
 // }
 
-module.exports = { registerUser, loginUser, updatePasswordController,forgotPasswordController,resendOTPController,resetPasswordController };
+module.exports = { registerUser, loginUser, updatePasswordController,resetSecurityPasswordController,forgotPasswordController,resendOTPController,resetPasswordController };
