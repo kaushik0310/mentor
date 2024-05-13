@@ -54,7 +54,7 @@ userSchema.pre("save", async function (next) {
 });
 
 //hashing the security ans
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async  function(next) {
   if (!this.isModified("answer")) {
     next();
   }

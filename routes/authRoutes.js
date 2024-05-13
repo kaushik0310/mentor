@@ -21,19 +21,19 @@ router.post("/updatePassword", authToken, updatePasswordController);
 //route for resetting password through security answer
  router.post("/resetPassword", resetSecurityPasswordController);
 
-// Endpoint to request OTP for password reset
+// route to request OTP for password reset
 router.post("/forgotPassword", forgotPasswordController);
 
-//Endpoint to resend OTP
+//route to resend OTP
 router.post("/resendOTP", resendOTPController);
 
-// Endpoint to verify OTP and reset password
+// route to verify OTP and reset password
 router.post("/reset-Password", resetPasswordController);
 
-//endpoint to verify otp
+//rout to verify otp only
 //router.post("/verifyOTP", verifyOTPController);
 
-//endpoint to enter newPassword
+//route to enter newPassword
 //router.post("/enterNewPassword", newPasswordController);
 
 module.exports = router;

@@ -7,7 +7,7 @@ const createClassController = async (req, res) => {
     let createClass = await classModel.create({
       title: req.body.title,
       aboutClass: req.body.aboutClass,
-      filename: process.env.baseUrl + req.file.filename
+      file: process.env.baseUrl + req.file.filename
     });
      ///console.log("req.path",req.file);
     res.status(201).send({

@@ -7,7 +7,7 @@ const classSchema = new mongoose.Schema({
   aboutClass: {
     type: String,
   },
-  filename: {
+  file: {
     type: String,
   },
 });

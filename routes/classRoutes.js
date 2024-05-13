@@ -7,7 +7,7 @@ const classModel = require("../model/classModel");
 const router = express.Router();
 
 
-router.post("/createClass", upload.single("filename"), createClassController);
+router.post("/createClass", upload.single("file"), createClassController);
 router.get("/getClass", getClassController);
 
 
